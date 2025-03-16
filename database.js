@@ -20,7 +20,9 @@ export function initializeDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT,
       description TEXT,
-      date TEXT
+      date TEXT,
+      user_id INTEGER,
+      FOREIGN KEY (user_id) REFERENCES users(id)
     )
   `);
 }

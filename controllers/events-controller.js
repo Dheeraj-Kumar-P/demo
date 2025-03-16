@@ -8,6 +8,10 @@ export function createEvent(req, res) {
   const { title, description, date } = req.body;
 
   try {
+    if (!title || !description || !date || title.trim() === '' || description.trim() === '' || isNaN(Date.parse(date))) {
+      return res.status(400).json({ message: 'Title, description, and date are required and must be valid values' });
+    }
+
     const event = createEventModel(title, description, date);
     res.status(201).json({ message: 'Event created successfully', event });
   } catch (error) {
@@ -18,6 +22,9 @@ export function createEvent(req, res) {
 export function editEvent(req, res) {
   const { id } = req.params;
   const { title, description, date } = req.body;
+  if (!title || !description || !date || title.trim() === '' || description.trim() === '' || isNaN(Date.parse(date))) {
+    return res.status(400).json({ message: 'Title, description, and date are required and must be valid values' });
+  }
 
   try {
     const event = updateEvent(id, title, description, date);
