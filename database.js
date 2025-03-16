@@ -25,6 +25,17 @@ export function initializeDatabase() {
       FOREIGN KEY (user_id) REFERENCES users(id)
     )
   `);
+
+  // Create registrations table if it doesn't exist
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS registrations (
+      event_id INTEGER,
+      user_id INTEGER,
+      FOREIGN KEY (event_id) REFERENCES events(id),
+      FOREIGN KEY (user_id) REFERENCES users(id),
+      PRIMARY KEY (event_id, user_id)
+    )
+  `);
 }
 
 export function getDatabase() {

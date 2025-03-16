@@ -59,3 +59,27 @@ export function fetchAllEvents() {
     throw error;
   }
 }
+
+export function registerEvent(eventId, userId) {
+  const db = getDatabase();
+  const stmt = db.prepare('INSERT INTO registrations (event_id, user_id) VALUES (?, ?)');
+
+  try {
+    stmt.run(eventId, userId);
+    return { eventId, userId };
+  } catch (error) {
+    throw error;
+  }
+}
+
+export function unregisterEvent(eventId, userId) {
+  const db = getDatabase();
+  const stmt = db.prepare('DELETE FROM registrations WHERE event_id = ? AND user_id = ?');
+
+  try {
+    stmt.run(eventId, userId);
+    return { eventId, userId };
+  } catch (error) {
+    throw error;
+  }
+}

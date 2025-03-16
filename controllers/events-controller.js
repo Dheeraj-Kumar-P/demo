@@ -1,7 +1,8 @@
 import {
   createEvent as createEventModel,
   updateEvent, deleteEvent as deleteEventModel,
-  fetchAllEvents, fetchEventById
+  fetchAllEvents, fetchEventById,
+  registerEvent as registerEventModel, unregisterEvent as unregisterEventModel
 } from '../models/events.js';
 
 export function createEvent(req, res) {
@@ -83,6 +84,38 @@ export function getSingleEvent(req, res) {
       res.status(404).json({ message: 'Event not found' });
     }
   } catch (error) {
+    res.status(500).send(error.message);
+  }
+}
+
+export function registerEvent(req, res) {
+  const { id } = req.params;
+
+  try {
+    const event = fetchEventById(id);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+    registerEventModel(id, req.user.id);
+    res.status(200).json({ message: 'You have successfully registered for this event' });
+  }
+  catch (error) {
+    res.status(500).send(error.message);
+  }
+}
+
+export function unregisterEvent(req, res) {
+  const { id } = req.params;
+
+  try {
+    const event = fetchEventById(id);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+    unregisterEventModel(id, req.user.id);
+    res.status(200).json({ message: 'You have successfully unregistered from this event' });
+  }
+  catch (error) {
     res.status(500).send(error.message);
   }
 }
