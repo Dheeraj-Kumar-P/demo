@@ -1,12 +1,12 @@
 import { getDatabase } from '../database.js';
 
-export function createEvent(title, description, date) {
+export function createEvent(title, description, date, userId) {
   const db = getDatabase();
-  const stmt = db.prepare('INSERT INTO events (title, description, date) VALUES (?, ?, ?)');
+  const stmt = db.prepare('INSERT INTO events (title, description, date, user_id) VALUES (?, ?, ?, ?)');
 
   try {
-    const result = stmt.run(title, description, date);
-    return { id: result.lastInsertRowid, title, description, date };
+    const result = stmt.run(title, description, date, userId);
+    return { id: result.lastInsertRowid, title, description, date, userId };
   } catch (error) {
     throw error;
   }

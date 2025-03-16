@@ -12,7 +12,7 @@ export function createEvent(req, res) {
       return res.status(400).json({ message: 'Title, description, and date are required and must be valid values' });
     }
 
-    const event = createEventModel(title, description, date);
+    const event = createEventModel(title, description, date, req.user.id);
     res.status(201).json({ message: 'Event created successfully', event });
   } catch (error) {
     res.status(500).send(error.message);
@@ -27,8 +27,17 @@ export function editEvent(req, res) {
   }
 
   try {
-    const event = updateEvent(id, title, description, date);
-    res.status(200).json({ message: 'Event updated successfully', event });
+    const event = fetchEventById(id);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    if (event.user_id !== req.user.id) {
+      return res.status(403).json({ message: 'You are not authorized to edit this event' });
+    }
+
+    const updatedEvent = updateEvent(id, title, description, date);
+    res.status(200).json({ message: 'Event updated successfully', updatedEvent });
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -38,6 +47,15 @@ export function deleteEvent(req, res) {
   const { id } = req.params;
 
   try {
+    const event = fetchEventById(id);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    if (event.user_id !== req.user.id) {
+      return res.status(403).json({ message: 'You are not authorized to delete this event' });
+    }
+
     deleteEventModel(id);
     res.status(200).json({ message: 'Event deleted successfully' });
   } catch (error) {
